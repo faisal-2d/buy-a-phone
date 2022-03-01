@@ -1,4 +1,6 @@
 const searchPhone = async () => {
+    mySpinner('block');
+
     const searchInput = document.getElementById('search-input');
     const searchValue = searchInput.value;
     searchInput.value = '';
@@ -15,13 +17,12 @@ const getResult = phones => {
     const displayResult = document.getElementById('display-results');
    displayResult.textContent = '';
     
-    const phoneList = phones.data;
+    const phoneList = phones.data.slice(0,20);
     phoneList.forEach(phone => {
 
     const div = document.createElement('div');
        div.classList.add('col');
-       div.innerHTML = `
-            <div class="col">
+       div.innerHTML = `            
               <div class="card h-100 text-center p-3 border border-info">
                 <img src="${phone.image}" class="card-img-top w-50 mx-auto" alt="...">
                 <div class="card-body">
@@ -29,29 +30,60 @@ const getResult = phones => {
                   <h6 class="card-title">${phone.brand}</h6>                  
                 </div>
                 <div>
-                <button class="btn btn-warning" type="button">Details</button>
+                <button onclick="getDetails('${phone.slug}')" class="btn btn-warning" type="button">Details</button>
                 </div>
-              </div>
-            </div>    
+              </div>                
        `;
        displayResult.appendChild(div);
+       mySpinner('none');
 
-    console.log(phone);
+    // console.log(phone);
     });    
 }
 
-document.getElementById('spinner').style.display = 'none';
-
-// spinner(0);
-
-// const spinner = action => {
-//     const spin = document.getElementById('spinner');
-//     if(action == 1){
-//         spin.style.display = 'block';
-//     }
+const getDetails = async phoneId => {
+    const displayDetails = document.getElementById('display-details');
+    displayDetails.textContent = ''; 
     
-//     else if (action == 0){
-//         spin.style.display = 'none';
-//     }
+    const url = `https://openapi.programming-hero.com/api/phone/${phoneId}`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    const phoneDetails = data.data;
+    const div = document.createElement('div');
+       div.innerHTML = `
+       <div class="row row-cols-1 row-cols-md-2 g-4">
+            <div class="col">
+                <div class="text-center">
+                <img src="${phoneDetails.image}" class="card-img-top w-50 mx-auto" alt="...">
+                </div>
+            </div>
+            <div class="col">
+                    <div>
+                    <h3>${phoneDetails.name}</h3>
+                    <p class="text-secondary">${phoneDetails.releaseDate}</p>
+                    </div>
+                    <div>                    
+                    <h5 class="text-primary">Memory : </h5> <p>${phoneDetails.mainFeatures.memory}</p>
+                    <h5 class="text-primary">Storage : </h5> <p>${phoneDetails.mainFeatures.storage}</p>
+                    </div>
+            </div>
+        </div>
+
+
+       `;
+    displayDetails.appendChild(div);
+    console.log(phoneDetails);
+}
+
+const mySpinner = action => {
+    const spin = document.getElementById('spinner');
+    if(action == 'block'){
+        spin.style.display = 'block';
+    }
     
-// }
+    else if (action == 'none'){
+        spin.style.display = 'none';
+    }
+    
+}
