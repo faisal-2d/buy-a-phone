@@ -1,9 +1,17 @@
-const searchPhone = async () => {
+const searchPhone = async () => {  
+    
     mySpinner('block');
 
     const searchInput = document.getElementById('search-input');
     const searchValue = searchInput.value;
+    
+    if(searchInput.value == ''){
+        mySpinner('none');
+        return alert();
+    }
     searchInput.value = '';
+
+    
 
     const url = `https://openapi.programming-hero.com/api/phones?search=${searchValue}`;
     const res = await fetch(url);
@@ -17,9 +25,14 @@ const getResult = phones => {
     const displayResult = document.getElementById('display-results');
    displayResult.textContent = '';
     
-    const phoneList = phones.data.slice(0,20);
-    phoneList.forEach(phone => {
+    const phoneList = phones.data;
+    if(phoneList.length == 0){
+        mySpinner('none');
+        return alert();
+    }
+    const phoneListSliced = phoneList.slice(0,20);
 
+    phoneListSliced.forEach(phone => {
     const div = document.createElement('div');
        div.classList.add('col');
        div.innerHTML = `            
@@ -74,6 +87,10 @@ const getDetails = async phoneId => {
        `;
     displayDetails.appendChild(div);
     console.log(phoneDetails);
+}
+
+const alert = () => {
+    document.getElementById('alert').style.display = 'block';
 }
 
 const mySpinner = action => {
