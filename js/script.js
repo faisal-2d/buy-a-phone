@@ -63,12 +63,33 @@ const getDetails = async phoneId => {
     
 
     const phoneDetails = data.data;
-    const otherFeature = phoneDetails.others;
-    // const featureKeys = Object.keys(otherFeature);
-    // console.log(otherFeature);
-    const sensors = (phoneDetails.mainFeatures.sensors).toString();
+    const others = phoneDetails.others;
+    const featureKeys = Object.keys(others);
+ 
+    const otherFeatures = document.createElement('div');  
+    featureKeys.forEach( i => { 
+        const p =document.createElement('p');        
+        p.innerHTML =`
+          <strong> ${i} </strong> :  ${others[i]}, 
+          `;
+         otherFeatures.appendChild(p)
+    } )   
+    const otherFeature = otherFeatures.innerHTML; 
+    
 
-    const p = "hi";
+    const sensorArray = phoneDetails.mainFeatures.sensors;
+ 
+    // const sensors = (phoneDetails.mainFeatures.sensors).toString();
+    const otherSensors = document.createElement('div');  
+    sensorArray.forEach( sensor => { 
+        const span =document.createElement('span');        
+        span.innerHTML =`
+          <strong> ${sensor} </strong>,  `;
+          otherSensors.appendChild(span)
+    } )   
+    const sensors = otherSensors.innerHTML;   
+    
+    
 
     const div = document.createElement('div');
        div.innerHTML = `
@@ -91,10 +112,10 @@ const getDetails = async phoneId => {
                 </div>                       
             </div>
         </div>
-        <div class="row">
+        <div class="row row-cols-1 row-cols-md-2 g-4 my-3">
                    <div class="col feature">
                         <h5 class="text-primary">Other Features :</h5> 
-                        <ul> ${p} </ul>  
+                        <ul> ${otherFeature} </ul>  
                    </div>
                    <div class="col">
                    <h5 class="text-primary">Sensors : </h5> 
