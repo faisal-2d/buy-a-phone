@@ -5,3 +5,9 @@
 #alert{
     display: none;
 }
+
+#featureCount{
+    padding: 5px;
+    background-color: springgreen;
+    border-radius: 50%;
+}

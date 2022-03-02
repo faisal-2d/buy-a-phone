@@ -1,17 +1,15 @@
 const searchPhone = async () => {  
     
-    mySpinner('block');
+    spinner('block', 'none');
 
     const searchInput = document.getElementById('search-input');
     const searchValue = searchInput.value;
     
     if(searchInput.value == ''){
-        mySpinner('none');
-        return alert();
+        spinner('none', 'none');
+        return myAlert('block');
     }
-    searchInput.value = '';
-
-    
+    searchInput.value = '';    
 
     const url = `https://openapi.programming-hero.com/api/phones?search=${searchValue}`;
     const res = await fetch(url);
@@ -27,8 +25,8 @@ const getResult = phones => {
     
     const phoneList = phones.data;
     if(phoneList.length == 0){
-        mySpinner('none');
-        return alert();
+        spinner('none', 'none');
+        return myAlert('block');
     }
     const phoneListSliced = phoneList.slice(0,20);
 
@@ -36,7 +34,7 @@ const getResult = phones => {
     const div = document.createElement('div');
        div.classList.add('col');
        div.innerHTML = `            
-              <div class="card h-100 text-center p-3 border border-info">
+              <div class="card h-100 text-center p-3 shadow">
                 <img src="${phone.image}" class="card-img-top w-50 mx-auto" alt="...">
                 <div class="card-body">
                   <h5 class="card-title">${phone.phone_name}</h5>
@@ -48,7 +46,7 @@ const getResult = phones => {
               </div>                
        `;
        displayResult.appendChild(div);
-       mySpinner('none');
+       spinner('none', 'block');
 
     // console.log(phone);
     });    
@@ -62,45 +60,58 @@ const getDetails = async phoneId => {
     const res = await fetch(url);
     const data = await res.json();
 
+    
+
     const phoneDetails = data.data;
+    const otherFeature = phoneDetails.others;
+    // const featureKeys = Object.keys(otherFeature);
+    // console.log(otherFeature);
+    const sensors = (phoneDetails.mainFeatures.sensors).toString();
+
+    const p = "hi";
+
     const div = document.createElement('div');
        div.innerHTML = `
-       <div class="row row-cols-1 row-cols-md-2 g-4">
+       <div class="row row-cols-1 row-cols-md-2 g-4 align-items-center">
             <div class="col">
                 <div class="text-center">
                 <img src="${phoneDetails.image}" class="card-img-top w-50 mx-auto" alt="...">
                 </div>
             </div>
             <div class="col">
-                    <div>
+                <div>
                     <h3>${phoneDetails.name}</h3>
-                    <p class="text-secondary">${phoneDetails.releaseDate}</p>
-                    </div>
-                    <div>                    
+                    <p class="text-secondary">${phoneDetails.releaseDate ? phoneDetails.releaseDate : 'Not Released Yet'}</p>
+                 </div>                                        
+                 <div class="col">
+                    <h5 class="text-primary">Chipset : </h5> <p>${phoneDetails.mainFeatures.chipset ? phoneDetails.mainFeatures.chipset : 'Unknown'}</p>
                     <h5 class="text-primary">Memory : </h5> <p>${phoneDetails.mainFeatures.memory}</p>
                     <h5 class="text-primary">Storage : </h5> <p>${phoneDetails.mainFeatures.storage}</p>
-                    </div>
+                    <h5 class="text-primary">Display Size : </h5> <p>${phoneDetails.mainFeatures.displaySize}</p>
+                </div>                       
             </div>
         </div>
+        <div class="row">
+                   <div class="col feature">
+                        <h5 class="text-primary">Other Features :</h5> 
+                        <ul> ${p} </ul>  
+                   </div>
+                   <div class="col">
+                   <h5 class="text-primary">Sensors : </h5> 
+                   <p>${sensors}</p>
+                   </div>
+        </div>       `;
 
-
-       `;
-    displayDetails.appendChild(div);
-    console.log(phoneDetails);
+    displayDetails.appendChild(div);    
+    // console.log(phoneDetails);
 }
 
-const alert = () => {
-    document.getElementById('alert').style.display = 'block';
+
+const myAlert = (alertStyle) => {
+    document.getElementById('alert').style.display = alertStyle;
 }
 
-const mySpinner = action => {
-    const spin = document.getElementById('spinner');
-    if(action == 'block'){
-        spin.style.display = 'block';
-    }
-    
-    else if (action == 'none'){
-        spin.style.display = 'none';
-    }
-    
+const spinner = (spinnerDisplayStyle, contentDisplayStyle) => {
+    document.getElementById('spinner').style.display = spinnerDisplayStyle;   
+    document.getElementById('result-div').style.display = contentDisplayStyle;   
 }
